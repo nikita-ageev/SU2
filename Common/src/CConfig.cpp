@@ -3675,6 +3675,14 @@ void CConfig::SetPostprocessing(SU2_COMPONENT val_software, unsigned short val_i
   bool standard_air = ((Kind_FluidModel == STANDARD_AIR));
   bool nemo = GetNEMOProblem();
 
+  /*--- SU2_GEO evaluates the geometrical functions only on the GEO_MARKER surfaces,
+   * without them all the functions and their gradients would silently be zero. ---*/
+
+  if (val_software == SU2_COMPONENT::SU2_GEO && nMarker_GeoEval == 0) {
+    SU2_MPI::Error("GEO_MARKER is empty. SU2_GEO evaluates the geometrical functions (AIRFOIL_*, WING_*,\n"
+                   "FUSELAGE_*, NACELLE_*, STATION*_*) only on the markers listed in GEO_MARKER.", CURRENT_FUNCTION);
+  }
+
   if (nZone > 1){
     Multizone_Problem = YES;
   }
